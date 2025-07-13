@@ -30,3 +30,40 @@ sudo systemctl status golem-provider
 
 # Monitora
 ./monitor-golem.sh
+
+# Configura Firewall:
+sudo ufw allow 11500/tcp
+
+# Configura i Prezzi Completi:
+In un altro terminale (o dopo aver avviato):
+
+# Imposta tutti i prezzi
+golemsp settings set --cpu-per-hour 0.005
+golemsp settings set --env-per-hour 0.05
+golemsp settings set --starting-fee 0.0
+
+# Verifica
+golemsp settings show
+
+# Servizio Automatico (opzionale)
+
+# Crea il servizio
+sudo nano /etc/systemd/system/golem-provider.service
+
+[Unit]
+Description=Golem Provider
+After=network.target
+
+[Service]
+Type=simple
+User=erdserassqw
+WorkingDirectory=/home/erdserassqw
+ExecStart=/home/erdserassqw/.local/bin/golemsp run
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+
+
+sudo ufw allow 11500/udp
